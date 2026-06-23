@@ -35,8 +35,27 @@ app.get("/api/books/:id", (req, res) => {
     }
 })
 
+app.get("/api/books/:genre", (req, res) => { 
+    if (!req.query.genre) {
+        res.status(404).send("Not Found")
+    }
+
+    // Is a string so we don't have to do any checks like Number() etc.
+    const matchingBooks = books.filter((book) => { return book.genre == req.query.genre })
+    console.log(matchingBooks)
+    res.status(200).send("Books containing genre:", matchingBooks)
+})
+
+
 app.post("/api/books", (req, res) => { 
-    console.log(req.body)
+    //console.log(req.body)
+    if (!req.body.title) {
+        res.status(400).send("Body is missing title.")
+    }
+    if (!req.body.author) {
+        res.status(400).send("Body is missing author.")
+    }
+
     const newBook = {}
     newBook.id = nextId
     newBook.title = req.body.title
