@@ -15,7 +15,15 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("Books API is running"));
 
-app.get("/api/books", (req, res) => res.json(books));
+app.get("/api/books", (req, res) => {
+    if (req.query.genre) {
+        const matchingBooks = books.filter((book) => { return book.genre === req.query.genre })
+        console.log(matchingBooks)
+        res.json(matchingBooks)
+    } else {
+        res.json(books)
+    }
+});
 
 app.get("/api/books/:id", (req, res) => { 
     console.log(req.params.id)
@@ -34,18 +42,6 @@ app.get("/api/books/:id", (req, res) => {
         res.status(404).send("Not Found")
     }
 })
-
-app.get("/api/books/:genre", (req, res) => { 
-    if (!req.query.genre) {
-        res.status(404).send("Not Found")
-    }
-
-    // Is a string so we don't have to do any checks like Number() etc.
-    const matchingBooks = books.filter((book) => { return book.genre == req.query.genre })
-    console.log(matchingBooks)
-    res.status(200).send("Books containing genre:", matchingBooks)
-})
-
 
 app.post("/api/books", (req, res) => { 
     //console.log(req.body)
